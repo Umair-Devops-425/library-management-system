@@ -43,12 +43,17 @@ jobs:
     - name: Tag and Push images
       run: |
         for service in $(docker-compose config --services); do
+          if [ "$service" = "mysql" ]; then
+            echo "Skipping MySQL (official image)"
+            continue
+          fi
+
           IMAGE_NAME=${{ secrets.DOCKER_USERNAME }}/${service}
           echo "Tagging and pushing $IMAGE_NAME ..."
-          
+
           docker tag ${service}:latest $IMAGE_NAME:latest
           docker tag ${service}:latest $IMAGE_NAME:v2
-          
+
           docker push $IMAGE_NAME:latest
           docker push $IMAGE_NAME:v2
         done
