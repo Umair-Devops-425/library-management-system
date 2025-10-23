@@ -51,11 +51,13 @@ jobs:
     # 4. Build Docker Images
     - name: Build Docker Images
       run: |
-        docker-compose up --build -d
+        # Build app image
+        docker build -t your-app-image:latest .
 
     # 5. Test if containers start
     - name: Test containers
       run: |
+        docker-compose up --build
         docker-compose ps
         docker-compose down
 
