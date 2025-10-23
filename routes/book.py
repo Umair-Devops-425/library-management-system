@@ -80,4 +80,3 @@ def search():
 		return render_template("books.html", search=True, books=d, count=len(d), keyword=escape(keyword), g=g)
 
 	return render_template('books.html', error="No books found!", keyword=escape(keyword))
-

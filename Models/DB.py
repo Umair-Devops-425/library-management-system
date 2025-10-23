@@ -1,35 +1,37 @@
 from flaskext.mysql import MySQL
 from pymysql.cursors import DictCursor
-
+import os
 
 class DB(object):
-	"""Initialize mysql database """
-	host = "localhost"
-	user = "root"
-	password = ""
-	db = "lms"
-	table = ""
+    """Initialize MySQL database"""
 
-	def __init__(self, app):
-		app.config["MYSQL_DATABASE_HOST"] = self.host;
-		app.config["MYSQL_DATABASE_USER"] = self.user;
-		app.config["MYSQL_DATABASE_PASSWORD"] = self.password;
-		app.config["MYSQL_DATABASE_DB"] = self.db;
+    # Use environment variables with defaults
+    host = os.getenv("MYSQL_HOST", "mysql")
+    user = os.getenv("MYSQL_USER", "root")
+    password = os.getenv("MYSQL_PASSWORD", "")
+    db = os.getenv("MYSQL_DATABASE", "lms")
+    table = ""
 
-		self.mysql = MySQL(app, cursorclass=DictCursor)
+    def __init__(self, app):
+        # Configure Flask-MySQL
+        app.config["MYSQL_DATABASE_HOST"] = self.host
+        app.config["MYSQL_DATABASE_USER"] = self.user
+        app.config["MYSQL_DATABASE_PASSWORD"] = self.password
+        app.config["MYSQL_DATABASE_DB"] = self.db
 
-	def cur(self):
-		return self.mysql.get_db().cursor()
+        self.mysql = MySQL(app, cursorclass=DictCursor)
 
-	def query(self, q):
-		h = self.cur()
-	
-		if (len(self.table)>0):
-			q = q.replace("@table", self.table)
+    def cur(self):
+        return self.mysql.get_db().cursor()
 
-		h.execute(q)
+    def query(self, q):
+        h = self.cur()
 
-		return h
+        if self.table:
+            q = q.replace("@table", self.table)
 
-	def commit(self):
-		self.query("COMMIT;")
+        h.execute(q)
+        return h
+
+    def commit(self):
+        self.query("COMMIT;")
