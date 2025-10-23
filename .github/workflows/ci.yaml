@@ -70,9 +70,9 @@ jobs:
         COMMIT_SHA=$(echo ${{ github.sha }} | cut -c1-7)
         
         # Tag app image
-        docker tag your-app-image:latest ${{ secrets.DOCKER_USERNAME }}/library-app:latest
-        docker tag your-app-image:latest ${{ secrets.DOCKER_USERNAME }}/library-app:$COMMIT_SHA
-        docker tag your-app-image:latest ${{ secrets.DOCKER_USERNAME }}/library-app:${{ github.run_number }}
+        docker tag library-app:v1 ${{ secrets.DOCKER_USERNAME }}/library-app:latest
+        docker tag library-app:v1 ${{ secrets.DOCKER_USERNAME }}/library-app:$COMMIT_SHA
+        docker tag library-app:v1 ${{ secrets.DOCKER_USERNAME }}/library-app:${{ github.run_number }}
         
         # Tag MySQL image
         docker tag mysql:8.0 ${{ secrets.DOCKER_USERNAME }}/mysql-db:latest
