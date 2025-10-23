@@ -74,8 +74,8 @@ jobs:
         docker tag library-app:latest ${{ secrets.DOCKER_USERNAME }}/library-app:${{ github.run_number }}
         
         # Tag MySQL image
-        docker tag mysql:8.0 ${{ secrets.DOCKER_USERNAME }}/mysql-db:latest
-        docker tag mysql:8.0 ${{ secrets.DOCKER_USERNAME }}/mysql-db:$COMMIT_SHA
+        docker tag mysql:db ${{ secrets.DOCKER_USERNAME }}/mysql-db:latest
+        docker tag mysql:db ${{ secrets.DOCKER_USERNAME }}/mysql-db:$COMMIT_SHA
         
         # Push all images
         docker push ${{ secrets.DOCKER_USERNAME }}/library-app:latest
