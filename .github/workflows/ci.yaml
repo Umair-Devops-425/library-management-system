@@ -52,7 +52,7 @@ jobs:
     - name: Build Docker Images
       run: |
         # Build app image
-        docker build -t your-app-image:latest .
+        docker build -t library-app:latest .
 
     # 5. Test if containers start
     - name: Test containers
@@ -69,9 +69,9 @@ jobs:
         COMMIT_SHA=$(echo ${{ github.sha }} | cut -c1-7)
         
         # Tag app image
-        docker tag library-app:v1 ${{ secrets.DOCKER_USERNAME }}/library-app:latest
-        docker tag library-app:v1 ${{ secrets.DOCKER_USERNAME }}/library-app:$COMMIT_SHA
-        docker tag library-app:v1 ${{ secrets.DOCKER_USERNAME }}/library-app:${{ github.run_number }}
+        docker tag library-app:latest ${{ secrets.DOCKER_USERNAME }}/library-app:latest
+        docker tag library-app:latest ${{ secrets.DOCKER_USERNAME }}/library-app:$COMMIT_SHA
+        docker tag library-app:latest ${{ secrets.DOCKER_USERNAME }}/library-app:${{ github.run_number }}
         
         # Tag MySQL image
         docker tag mysql:8.0 ${{ secrets.DOCKER_USERNAME }}/mysql-db:latest
