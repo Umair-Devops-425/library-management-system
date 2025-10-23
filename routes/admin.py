@@ -151,4 +151,3 @@ def search():
 		return render_template("books/views.html", search=True, books=d, count=len(d), keyword=escape(keyword), g=g, admin=admin)
 
 	return render_template('books/views.html', error="No books found!", keyword=escape(keyword))
-
