@@ -38,7 +38,7 @@ jobs:
     # 2. Build Docker Images
     - name: Build Docker Images
       run: |  # Fixed: changed 'runs' to 'run'
-        docker-compose build
+        docker-compose up --build
 
     # 3. Test if containers start
     - name: Test containers
