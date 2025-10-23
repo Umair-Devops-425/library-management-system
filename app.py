@@ -6,11 +6,11 @@ from flaskext.mysql import MySQL
 app = Flask(__name__)
 
 # MySQL Configuration
-app.config['MYSQL_DATABASE_USER'] = os.environ.get('DB_USER')
-app.config['MYSQL_DATABASE_PASSWORD'] = os.environ.get('DB_PASSWORD')
-app.config['MYSQL_DATABASE_DB'] = os.environ.get('DB_NAME')
+app.config['MYSQL_DATABASE_USER'] = os.environ.get('MYSQL_USER')
+app.config['MYSQL_DATABASE_PASSWORD'] = os.environ.get('MYSQL_PASSWORD')
+app.config['MYSQL_DATABASE_DB'] = os.environ.get('MYSQL_DATABASE')
 app.config['MYSQL_DATABASE_HOST'] = os.environ.get('MYSQL_HOST')
-app.config['MYSQL_DATABASE_PORT'] = int(os.environ.get('DB_PORT', 3306))
+app.config['MYSQL_DATABASE_PORT'] = int(os.environ.get('MYSQL_PORT', 3306))
 
 mysql = MySQL(app)
 
