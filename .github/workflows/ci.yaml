@@ -27,14 +27,26 @@ jobs:
         # Build the app service
         docker compose build app
         
-        # Get the actual project name (Docker Compose uses directory name with hyphens)
-        PROJECT_NAME=$(basename $(pwd) | tr '[:upper:]' '[:lower:]' | tr '_' '-')
-        BUILT_IMAGE="${PROJECT_NAME}-app"
+        # List all images to see what was created
+        echo "Available images:"
+        docker images
         
-        echo "Built image name: $BUILT_IMAGE"
+        # Get the built image name directly from docker images
+        BUILT_IMAGE=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep -E "(library-management-system-app|app)" | head -n 1)
         
-        # Verify the image exists
-        docker images | grep app
+        echo "Found built image: $BUILT_IMAGE"
+        
+        # If we can't find it, try common patterns
+        if [ -z "$BUILT_IMAGE" ]; then
+          echo "Trying alternative image names..."
+          BUILT_IMAGE=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep "app" | head -n 1)
+        fi
+        
+        if [ -z "$BUILT_IMAGE" ]; then
+          echo "Error: Could not find built image"
+          docker images
+          exit 1
+        fi
         
         # Tag with your Docker Hub username
         docker tag $BUILT_IMAGE ${{ secrets.DOCKER_USERNAME }}/app:latest
@@ -43,3 +55,5 @@ jobs:
         # Push both tags
         docker push ${{ secrets.DOCKER_USERNAME }}/app:latest
         docker push ${{ secrets.DOCKER_USERNAME }}/app:v2
+        
+        echo "✅ Successfully pushed images!"
