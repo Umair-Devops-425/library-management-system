@@ -1,7 +1,7 @@
 name: CI Pipeline
 
 on:
-  push: 
+  push:
     branches: [master]
   pull_request:
     branches: [master]
@@ -23,7 +23,7 @@ jobs:
 
     # 3. Install dependencies
     - name: Install dependencies
-      run: |  # Fixed: changed 'runs' to 'run'
+      run: |
         pip install -r requirements.txt
 
   build:
@@ -37,27 +37,24 @@ jobs:
 
     # 2. Build Docker Images
     - name: Build Docker Images
-      run: |  # Fixed: changed 'runs' to 'run'
-        docker-compose up --build
+      run: |
+        docker-compose up --build -d
 
     # 3. Test if containers start
     - name: Test containers
-      run: |  # Fixed: changed 'runs' to 'run'
-        docker-compose up -d
+      run: |
         docker-compose ps
         docker-compose down
 
-    # 4. Manual Tagging and Push (Only on main branch push)
+    # 4. Tag and Push to Docker Hub (only on master branch)
     - name: Tag and Push to Docker Hub
-      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      if: github.event_name == 'push' && github.ref == 'refs/heads/master'
       run: |
-        # Login to Docker Hub
         echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
         
-        # Get commit SHA (first 7 characters)
         COMMIT_SHA=$(echo ${{ github.sha }} | cut -c1-7)
         
-        # Tag images with multiple tags
+        # Tag app image
         docker tag your-app-image:latest ${{ secrets.DOCKER_USERNAME }}/library-app:latest
         docker tag your-app-image:latest ${{ secrets.DOCKER_USERNAME }}/library-app:$COMMIT_SHA
         docker tag your-app-image:latest ${{ secrets.DOCKER_USERNAME }}/library-app:${{ github.run_number }}
@@ -66,7 +63,7 @@ jobs:
         docker tag mysql:8.0 ${{ secrets.DOCKER_USERNAME }}/mysql-db:latest
         docker tag mysql:8.0 ${{ secrets.DOCKER_USERNAME }}/mysql-db:$COMMIT_SHA
         
-        # Push all tagged images
+        # Push all images
         docker push ${{ secrets.DOCKER_USERNAME }}/library-app:latest
         docker push ${{ secrets.DOCKER_USERNAME }}/library-app:$COMMIT_SHA
         docker push ${{ secrets.DOCKER_USERNAME }}/library-app:${{ github.run_number }}
