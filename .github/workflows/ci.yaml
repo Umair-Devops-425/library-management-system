@@ -2,58 +2,53 @@ name: CI Pipeline
 on:
   push:
     branches: [master]
+
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-    
+
     - name: Create .env file
       run: |
         echo "FLASK_ENV=production" >> .env
-        echo "DB_USER=lmsuser" >> .env
-        echo "DB_PASSWORD=lms123" >> .env
-        echo "DB_NAME=lms" >> .env
-        echo "DB_PORT=3306" >> .env
+        echo "MYSQL_USER=lmsuser" >> .env
+        echo "MYSQL_PASSWORD=lms123" >> .env
+        echo "MYSQL_DATABASE=lms" >> .env
+        echo "MYSQL_PORT=3306" >> .env
         echo "MYSQL_HOST=mysql" >> .env
-    
+
     - name: Login to Docker Hub
       run: |
         echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-    
+
     - name: Build and Push app image
       run: |
-        # Build the app service
         docker compose build app
-        
-        # List all images to see what was created
+
         echo "Available images:"
         docker images
-        
-        # Get the built image name directly from docker images
+
         BUILT_IMAGE=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep -E "(library-management-system-app|app)" | head -n 1)
-        
+
         echo "Found built image: $BUILT_IMAGE"
-        
-        # If we can't find it, try common patterns
+
         if [ -z "$BUILT_IMAGE" ]; then
           echo "Trying alternative image names..."
           BUILT_IMAGE=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep "app" | head -n 1)
         fi
-        
+
         if [ -z "$BUILT_IMAGE" ]; then
           echo "Error: Could not find built image"
           docker images
           exit 1
         fi
-        
-        # Tag with your Docker Hub username
+
         docker tag $BUILT_IMAGE ${{ secrets.DOCKER_USERNAME }}/app:latest
         docker tag $BUILT_IMAGE ${{ secrets.DOCKER_USERNAME }}/app:v2
-        
-        # Push both tags
+
         docker push ${{ secrets.DOCKER_USERNAME }}/app:latest
         docker push ${{ secrets.DOCKER_USERNAME }}/app:v2
-        
+
         echo "✅ Successfully pushed images!"

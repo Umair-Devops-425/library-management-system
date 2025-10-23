@@ -12,7 +12,8 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./:/app
-    env_file: .env # using .env file to load the environment variables except for MYSQL_HOST
+    env_file: 
+      - .env # using .env file to load the environment variables except for MYSQL_HOST
     environment:
       MYSQL_HOST: mysql
       FLASK_ENV: development
