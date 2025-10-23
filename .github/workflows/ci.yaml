@@ -24,12 +24,17 @@ jobs:
     
     - name: Build and Push app image
       run: |
-        # Build the app service (using docker compose with space)
+        # Build the app service
         docker compose build app
         
-        # Get the actual image name created by docker compose
-        PROJECT_NAME=$(basename $(pwd) | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]//g')
+        # Get the actual project name (Docker Compose uses directory name with hyphens)
+        PROJECT_NAME=$(basename $(pwd) | tr '[:upper:]' '[:lower:]' | tr '_' '-')
         BUILT_IMAGE="${PROJECT_NAME}-app"
+        
+        echo "Built image name: $BUILT_IMAGE"
+        
+        # Verify the image exists
+        docker images | grep app
         
         # Tag with your Docker Hub username
         docker tag $BUILT_IMAGE ${{ secrets.DOCKER_USERNAME }}/app:latest
