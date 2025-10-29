@@ -71,20 +71,7 @@ Thumbs.db
 # Terraform
 # =========================================================
 # Ignore Terraform local state and provider binaries
-**/.terraform/*
-**/.terraform.lock.hcl
-*.tfstate
-*.tfstate.*
-*.tfvars
-*.backup
-crash.log
-crash.*.log
-override.tf
-override.tf.json
-*_override.tf
-*_override.tf.json
-.terraformrc
-terraform.rc
+Terraform/
 
 # =========================================================
 # Miscellaneous
