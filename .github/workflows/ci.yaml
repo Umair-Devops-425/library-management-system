@@ -1,4 +1,4 @@
-name: Build and Push Docker Images
+name: Build and Push Both Images
 
 on:
   push:
@@ -38,11 +38,23 @@ jobs:
         tags: |
           ${{ secrets.DOCKER_USERNAME }}/lms-app:latest
           ${{ secrets.DOCKER_USERNAME }}/lms-app:${{ steps.tag.outputs.TAG }}
-        cache-from: type=gha
-        cache-to: type=gha,mode=max
 
-    - name: Verify push
+    - name: Build and push MySQL with schema
+      uses: docker/build-push-action@v5
+      with:
+        context: ./db
+        file: ./Dockerfile
+        push: true
+        tags: |
+          ${{ secrets.DOCKER_USERNAME }}/lms-mysql:latest
+          ${{ secrets.DOCKER_USERNAME }}/lms-mysql:${{ steps.tag.outputs.TAG }}
+
+    - name: Verify both images
       run: |
-        echo "Successfully pushed:"
+        echo "Flask App Image:"
         echo "- ${{ secrets.DOCKER_USERNAME }}/lms-app:latest"
         echo "- ${{ secrets.DOCKER_USERNAME }}/lms-app:${{ steps.tag.outputs.TAG }}"
+        echo ""
+        echo "MySQL Image:"
+        echo "- ${{ secrets.DOCKER_USERNAME }}/lms-mysql:latest" 
+        echo "- ${{ secrets.DOCKER_USERNAME }}/lms-mysql:${{ steps.tag.outputs.TAG }}"
