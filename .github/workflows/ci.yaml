@@ -42,9 +42,9 @@ jobs:
         docker tag ${DOCKER_USERNAME}/lms-app:latest ${DOCKER_USERNAME}/lms-app:${{ steps.tag.outputs.TAG }}
         
         # Push both tags
-        docker push ${DOCKER_USERNAME}/lms-app:latest
-        docker push ${DOCKER_USERNAME}/lms-app:${{ steps.tag.outputs.TAG }}
+        docker push ${DOCKER_USERNAME}/lms-db:latest
+        docker push ${DOCKER_USERNAME}/lms-db:${{ steps.tag.outputs.TAG }}
         
         echo "Images pushed:"
-        echo "- ${DOCKER_USERNAME}/lms-app:latest"
-        echo "- ${DOCKER_USERNAME}/lms-app:${{ steps.tag.outputs.TAG }}"
+        echo "- ${DOCKER_USERNAME}/lms-db:latest"
+        echo "- ${DOCKER_USERNAME}/lms-dbp:${{ steps.tag.outputs.TAG }}"
