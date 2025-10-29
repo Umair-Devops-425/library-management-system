@@ -1,6 +1,6 @@
-# -------------------------------
+# =========================================================
 # Python
-# -------------------------------
+# =========================================================
 __pycache__/
 *.py[cod]
 *$py.class
@@ -13,23 +13,23 @@ __pycache__/
 dist/
 build/
 venv/
+.venv/
 .env
 .env.*
-.venv/
 pip-log.txt
 pip-delete-this-directory.txt
 
-# -------------------------------
+# =========================================================
 # Flask / App
-# -------------------------------
+# =========================================================
 instance/
 *.db
 *.sqlite
 *.sqlite3
 
-# -------------------------------
+# =========================================================
 # Logs & temp files
-# -------------------------------
+# =========================================================
 *.log
 *.out
 *.err
@@ -38,52 +38,55 @@ instance/
 *.bak
 *.swp
 *.swo
+*.tmp
+*.temp
 .DS_Store
 Thumbs.db
 
-# -------------------------------
+# =========================================================
 # IDE / Editor settings
-# -------------------------------
+# =========================================================
 .vscode/
 .idea/
 *.code-workspace
 *.sublime-project
 *.sublime-workspace
 
-# -------------------------------
+# =========================================================
 # Docker
-# -------------------------------
-# Ignore local build artifacts
+# =========================================================
+# Ignore generated data volumes and temp files
 **/db-data/
 **/docker-entrypoint-initdb.d/
 *.tar
 *.img
 *.bak
 .dockerignore
-# Keep Dockerfiles and compose
+
+# Keep key Docker configuration files
 !Dockerfile
-!docker-compose.yaml
 !docker-compose.yml
+!docker-compose.yaml
 
-# -------------------------------
+# =========================================================
 # Terraform
-# -------------------------------
-# Terraform/
-# **/.terraform/
-# *.tfstate
-# *.tfstate.*
-# *.backup
-
-# Terraform
+# =========================================================
+# Ignore all Terraform local state and provider binaries
 Terraform/
 **/.terraform/
+**/.terraform.lock.hcl
 *.tfstate
 *.tfstate.*
 *.backup
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
 
-# -------------------------------
-# Misc
-# -------------------------------
+# =========================================================
+# Miscellaneous
+# =========================================================
 node_modules/
 __MACOSX/
 *.zip
@@ -91,16 +94,16 @@ __MACOSX/
 *.tgz
 *.7z
 
-# -------------------------------
-# Local development files
-# -------------------------------
+# =========================================================
+# Local environment / secrets
+# =========================================================
 .envrc
 secret.env
 .env.example
 
-# -------------------------------
+# =========================================================
 # Python testing / coverage
-# -------------------------------
+# =========================================================
 .coverage
 coverage.xml
 htmlcov/
