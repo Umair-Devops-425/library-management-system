@@ -68,6 +68,13 @@ Thumbs.db
 # -------------------------------
 # Terraform
 # -------------------------------
+# Terraform/
+# **/.terraform/
+# *.tfstate
+# *.tfstate.*
+# *.backup
+
+# Terraform
 Terraform/
 **/.terraform/
 *.tfstate
