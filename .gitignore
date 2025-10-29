@@ -9,3 +9,4 @@ __pycache__/
 .fuse*
 *.pyc
 __*__
+Terraform

@@ -3,19 +3,18 @@ version: '3.8'
 services:
   app:
     container_name: lms
-    # image: python:3.9-slim
-    ports:
-      - "5000:5000"
-    working_dir: /app
     build:
       context: .
       dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    working_dir: /app
     volumes:
       - ./:/app
-    env_file: 
-      - .env # using .env file to load the environment variables except for MYSQL_HOST
+    env_file:
+      - .env
     environment:
-      MYSQL_HOST: mysql
+      MYSQL_HOST: mysql            # Name of the MySQL service below
       FLASK_ENV: development
       DB_USER: lmsuser
       DB_PASSWORD: lms123
@@ -24,18 +23,20 @@ services:
     depends_on:
       - mysql
 
-
   mysql:
     container_name: lms-db
     image: mysql:8.0
-    volumes:
-      - db-data:/var/lib/mysql
-      - ./db/lms.sql:/docker-entrypoint-initdb.d/lms.sql
+    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: lms
       MYSQL_USER: lmsuser
       MYSQL_PASSWORD: lms123
-      MYSQL_DATABASE: lms
+    ports:
+      - "3306:3306"
+    volumes:
+      - db-data:/var/lib/mysql
+      - ./db/lms.sql:/docker-entrypoint-initdb.d/lms.sql:ro
 
 volumes:
   db-data:

@@ -1,4 +1,5 @@
 name: CI Pipeline
+
 on:
   push:
     branches: [master]
@@ -6,49 +7,47 @@ on:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Create .env file
-      run: |
-        echo "FLASK_ENV=production" >> .env
-        echo "MYSQL_USER=lmsuser" >> .env
-        echo "MYSQL_PASSWORD=lms123" >> .env
-        echo "MYSQL_DATABASE=lms" >> .env
-        echo "MYSQL_PORT=3306" >> .env
-        echo "MYSQL_HOST=mysql" >> .env
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-    - name: Login to Docker Hub
-      run: |
-        echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: Build and Push app image
-      run: |
-        docker compose build app
+      - name: Create .env file
+        run: |
+          echo "FLASK_ENV=production" >> .env
+          echo "MYSQL_USER=lmsuser" >> .env
+          echo "MYSQL_PASSWORD=lms123" >> .env
+          echo "MYSQL_DATABASE=lms" >> .env
+          echo "MYSQL_PORT=3306" >> .env
+          echo "MYSQL_HOST=mysql" >> .env
 
-        echo "Available images:"
-        docker images
+      - name: Build and push Docker image
+        run: |
+          # Generate a unique tag using the commit SHA and date
+          IMAGE_NAME=${{ secrets.DOCKER_USERNAME }}/lms-app
+          VERSION_TAG=$(date +%Y%m%d)-${GITHUB_SHA::7}
 
-        BUILT_IMAGE=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep -E "(library-management-system-app|app)" | head -n 1)
+          echo "Building image: $IMAGE_NAME:$VERSION_TAG"
+          
+          docker compose build app
 
-        echo "Found built image: $BUILT_IMAGE"
+          # Tag the image
+          docker tag lms:latest $IMAGE_NAME:$VERSION_TAG
+          docker tag lms:latest $IMAGE_NAME:latest
 
-        if [ -z "$BUILT_IMAGE" ]; then
-          echo "Trying alternative image names..."
-          BUILT_IMAGE=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep "app" | head -n 1)
-        fi
+          # Push both tags
+          docker push $IMAGE_NAME:$VERSION_TAG
+          docker push $IMAGE_NAME:latest
 
-        if [ -z "$BUILT_IMAGE" ]; then
-          echo "Error: Could not find built image"
-          docker images
-          exit 1
-        fi
-
-        docker tag $BUILT_IMAGE ${{ secrets.DOCKER_USERNAME }}/app:latest
-        docker tag $BUILT_IMAGE ${{ secrets.DOCKER_USERNAME }}/app:v2
-
-        docker push ${{ secrets.DOCKER_USERNAME }}/app:latest
-        docker push ${{ secrets.DOCKER_USERNAME }}/app:v2
-
-        echo "✅ Successfully pushed images!"
+          echo "✅ Successfully pushed:"
+          echo " - $IMAGE_NAME:$VERSION_TAG"
+          echo " - $IMAGE_NAME:latest"
