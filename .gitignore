@@ -68,16 +68,11 @@ Thumbs.db
 # -------------------------------
 # Terraform
 # -------------------------------
-**/.terraform/*
-**/.terraform.lock.hcl
+Terraform/
+**/.terraform/
 *.tfstate
 *.tfstate.*
-crash.log
 *.backup
-override.tf
-override.tf.json
-*_override.tf
-*_override.tf.json
 
 # -------------------------------
 # Misc
