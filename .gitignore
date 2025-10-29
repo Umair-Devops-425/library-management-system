@@ -60,7 +60,6 @@ Thumbs.db
 **/docker-entrypoint-initdb.d/
 *.tar
 *.img
-*.bak
 .dockerignore
 
 # Keep key Docker configuration files
@@ -71,18 +70,21 @@ Thumbs.db
 # =========================================================
 # Terraform
 # =========================================================
-# Ignore all Terraform local state and provider binaries
-Terraform/
-**/.terraform/
+# Ignore Terraform local state and provider binaries
+**/.terraform/*
 **/.terraform.lock.hcl
 *.tfstate
 *.tfstate.*
+*.tfvars
 *.backup
 crash.log
+crash.*.log
 override.tf
 override.tf.json
 *_override.tf
 *_override.tf.json
+.terraformrc
+terraform.rc
 
 # =========================================================
 # Miscellaneous
@@ -99,7 +101,8 @@ __MACOSX/
 # =========================================================
 .envrc
 secret.env
-.env.example
+.env.local
+.env.*.local
 
 # =========================================================
 # Python testing / coverage
